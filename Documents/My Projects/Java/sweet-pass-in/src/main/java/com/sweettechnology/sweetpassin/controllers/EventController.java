@@ -1,8 +1,10 @@
 package com.sweettechnology.sweetpassin.controllers;
 
+import com.sweettechnology.sweetpassin.dto.attendee.AttendeesListResponseDTO;
 import com.sweettechnology.sweetpassin.dto.event.EventIdDTO;
 import com.sweettechnology.sweetpassin.dto.event.EventRequestDTO;
 import com.sweettechnology.sweetpassin.dto.event.EventResponseDTO;
+import com.sweettechnology.sweetpassin.services.AttendeeService;
 import com.sweettechnology.sweetpassin.services.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequiredArgsConstructor
 public class EventController {
     private final EventService eventService;
+    private final AttendeeService attendeeService;
     @GetMapping("/{id}")
     public ResponseEntity<EventResponseDTO> getEvent(@PathVariable String id){
         EventResponseDTO event = this.eventService.getEventDetail(id);
@@ -26,5 +29,11 @@ public class EventController {
         var uri = uriComponentsBuilder.path("/events/{id}").buildAndExpand(eventIdDTO.eventId()).toUri();
 
         return ResponseEntity.created(uri).body(eventIdDTO);
+    }
+
+    @GetMapping("/attendees/{id}")
+    public ResponseEntity<AttendeesListResponseDTO> getEventAttendees(@PathVariable String id){
+        AttendeesListResponseDTO attendeesListResponseDTO = this.attendeeService.getEventsAttendee(id);
+        return ResponseEntity.ok(attendeesListResponseDTO);
     }
 }

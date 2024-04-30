@@ -6,7 +6,6 @@ import com.sweettechnology.sweetpassin.domain.event.exceptions.EventNotFoundExce
 import com.sweettechnology.sweetpassin.dto.event.EventIdDTO;
 import com.sweettechnology.sweetpassin.dto.event.EventRequestDTO;
 import com.sweettechnology.sweetpassin.dto.event.EventResponseDTO;
-import com.sweettechnology.sweetpassin.repositories.AttendeeRepository;
 import com.sweettechnology.sweetpassin.repositories.EventRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,11 +17,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EventService {
     private final EventRepository eventRepository;
-    private final AttendeeRepository attendeeRepository;
+    private final AttendeeService attendeeService;
 
     public EventResponseDTO getEventDetail(String eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException("Event not found with Id:" + eventId));
-        List<Attendee> attendees = attendeeRepository.findByEventId(eventId);
+        List<Attendee> attendees = this.attendeeService.getAllAttendeesFromEvent(eventId);
         return new EventResponseDTO(event, attendees.size());
     }
 
