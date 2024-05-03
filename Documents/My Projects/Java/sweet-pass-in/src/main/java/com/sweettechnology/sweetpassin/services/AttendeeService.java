@@ -1,6 +1,7 @@
 package com.sweettechnology.sweetpassin.services;
 
 import com.sweettechnology.sweetpassin.domain.attendee.Attendee;
+import com.sweettechnology.sweetpassin.domain.attendee.exceptions.AttendeeAlreadyExistException;
 import com.sweettechnology.sweetpassin.domain.checkin.CheckIn;
 import com.sweettechnology.sweetpassin.dto.attendee.AttendeeDetailDTO;
 import com.sweettechnology.sweetpassin.dto.attendee.AttendeesListResponseDTO;
@@ -33,5 +34,13 @@ public class AttendeeService {
              return new AttendeeDetailDTO(attendee.getId(), attendee.getName(),attendee.getEmail(), attendee.getCreatedAt(), checkedInAt);
          }).toList();
          return new AttendeesListResponseDTO(attendeeDetailDTOList);
+    }
+    public Attendee registerAttendee(Attendee attendee){
+        this.attendeeRepository.save(attendee);
+        return attendee;
+    }
+    public void verifyAttendeeSubscription(String email, String eventId){
+        Optional<Attendee> isAttendeeRegistered = this.attendeeRepository.findByEventIdAndByEmail(eventId,email);
+        if(isAttendeeRegistered.isPresent()) throw new AttendeeAlreadyExistException("Is attendee already registered");
     }
 }
