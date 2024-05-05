@@ -1,5 +1,7 @@
 package com.sweettechnology.sweetpassin.controllers;
 
+import com.sweettechnology.sweetpassin.dto.attendee.AttendeeIdDTO;
+import com.sweettechnology.sweetpassin.dto.attendee.AttendeeResquestDTO;
 import com.sweettechnology.sweetpassin.dto.attendee.AttendeesListResponseDTO;
 import com.sweettechnology.sweetpassin.dto.event.EventIdDTO;
 import com.sweettechnology.sweetpassin.dto.event.EventRequestDTO;
@@ -29,6 +31,14 @@ public class EventController {
         var uri = uriComponentsBuilder.path("/events/{id}").buildAndExpand(eventIdDTO.eventId()).toUri();
 
         return ResponseEntity.created(uri).body(eventIdDTO);
+    }
+    @PostMapping("/{eventId}/attendees")
+    public ResponseEntity<AttendeeIdDTO> registerAttendee(@PathVariable String eventId, @RequestBody AttendeeResquestDTO body, UriComponentsBuilder uriComponentsBuilder){
+        AttendeeIdDTO attendeeIdDTO = this.eventService.registerAttendeeOnEvent(eventId,body);
+
+        var uri = uriComponentsBuilder.path("/attendees/{attendeeId}/badge").buildAndExpand(attendeeIdDTO.attendeeId()).toUri();
+
+        return ResponseEntity.created(uri).body(attendeeIdDTO);
     }
 
     @GetMapping("/attendees/{id}")
